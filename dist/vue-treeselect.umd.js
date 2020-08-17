@@ -2142,11 +2142,11 @@ var instanceId = 0;
       } else {
         var _tisd = this;
 
-        var searchQuery = _tisd.trigger.searchQuery;
+        var searchQuery = _tisd.trigger.searchQuery.trim();
 
-        if (searchQuery) {
-          var jsonCity = sessionStorage.getItem("allCitys") || '[]';
-          var allCity = JSON.parse(jsonCity);
+        if (searchQuery && searchQuery != "") {
+          var allCity = _tisd.getCityList();
+
           var matArr = [];
 
           if (allCity.length > 0) {
@@ -2187,6 +2187,25 @@ var instanceId = 0;
     }
   },
   methods: {
+    getCityList: function getCityList() {
+      var cityList = [];
+      var continent = sessionStorage.getItem("allContinent") || '[]';
+      var jsonAllCount = JSON.parse(continent);
+
+      if (jsonAllCount && jsonAllCount.length > 0) {
+        jsonAllCount.forEach(function (item, index) {
+          if (item.children) {
+            item.children.forEach(function (child) {
+              if (child.children) {
+                cityList.push(child.children);
+              }
+            });
+          }
+        });
+      }
+
+      return cityList.flat(Infinity);
+    },
     verifyProps: function verifyProps() {
       var _this3 = this;
 
