@@ -865,11 +865,10 @@ export default {
         this.handleRemoteSearch()
       } else {
         var _tisd = this
-        var searchQuery = _tisd.trigger.searchQuery;
+        var searchQuery = _tisd.trigger.searchQuery.trim();
         //根据查询参数配置城市
-        if (searchQuery){
-          var jsonCity = sessionStorage.getItem("allCitys")||'[]';
-          var allCity = JSON.parse(jsonCity);
+        if (searchQuery && searchQuery!=""){
+          var allCity = _tisd.getCityList();
           var matArr =[];
           if (allCity.length>0){
             allCity.forEach(function (itm) {
@@ -908,6 +907,24 @@ export default {
   },
 
   methods: {
+    getCityList(){
+      //获取缓存中的城市
+      let cityList = [];
+      let continent = sessionStorage.getItem("allContinent")||'[]';
+      const jsonAllCount = JSON.parse(continent);
+      if (jsonAllCount && jsonAllCount.length>0){
+        jsonAllCount.forEach(function(item, index) {
+          if (item.children) {
+            item.children.forEach(function (child) {
+              if (child.children) {
+                cityList.push(child.children);
+              }
+            });
+          }
+        });
+      }
+      return cityList.flat(Infinity);
+    },
     verifyProps() {
       warning(
         () => this.async ? this.searchable : true,
