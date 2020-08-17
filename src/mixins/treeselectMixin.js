@@ -864,7 +864,35 @@ export default {
       if (this.async) {
         this.handleRemoteSearch()
       } else {
-        this.handleLocalSearch()
+        var _tisd = this
+        var searchQuery = _tisd.trigger.searchQuery;
+        //根据查询参数配置城市
+        if (searchQuery){
+          var jsonCity = sessionStorage.getItem("allCitys")||'[]';
+          var allCity = JSON.parse(jsonCity);
+          var matArr =[];
+          allCity.forEach(function (itm) {
+            var sq = new RegExp(searchQuery);
+            var cname = itm.codeCname;
+            if (cname.match(sq)){
+              if (itm.codeCode.length>=6){
+                matArr.push(itm.upperCode)
+              }
+            }
+          });
+          if (matArr.length>0){
+            matArr.forEach(function (its) {
+              _tisd.traverseAllNodesDFS(function (node) {
+                if (its === node.id) {
+                  _tisd.toggleExpanded(node)
+                }
+              });
+            });
+          }
+        }
+        setTimeout(function () {
+          _tisd.handleLocalSearch();
+        }, 100);
       }
 
       this.$emit('search-change', this.trigger.searchQuery, this.getInstanceId())
