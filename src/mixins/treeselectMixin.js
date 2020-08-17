@@ -871,15 +871,17 @@ export default {
           var jsonCity = sessionStorage.getItem("allCitys")||'[]';
           var allCity = JSON.parse(jsonCity);
           var matArr =[];
-          allCity.forEach(function (itm) {
-            var sq = new RegExp(searchQuery);
-            var cname = itm.codeCname;
-            if (cname.match(sq)){
-              if (itm.codeCode.length>=6){
-                matArr.push(itm.upperCode)
+          if (allCity.length>0){
+            allCity.forEach(function (itm) {
+              var sq = new RegExp(searchQuery);
+              var cname = itm.codeCname;
+              if (cname.match(sq)){
+                if (itm.codeCode.length>=6){
+                  matArr.push(itm.upperCode)
+                }
               }
-            }
-          });
+            });
+          }
           if (matArr.length>0){
             matArr.forEach(function (its) {
               _tisd.traverseAllNodesDFS(function (node) {
