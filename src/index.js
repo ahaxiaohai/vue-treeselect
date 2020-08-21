@@ -1,10 +1,9 @@
 import Treeselect from './components/Treeselect'
 import treeselectMixin from './mixins/treeselectMixin'
-import renderInput from './components/Input'
 import './style.less'
 
 export default Treeselect
-export { Treeselect, treeselectMixin,renderInput }
+export { Treeselect, treeselectMixin}
 export {
   // Delayed loading.
   LOAD_ROOT_OPTIONS,
