@@ -583,6 +583,18 @@ function getErrorMessage(err) {
   return err.message || String(err);
 }
 
+function _flat(arr) {
+  var newArr = [];
+  arr.forEach(function (item, idx) {
+    if (Array.isArray(item)) {
+      newArr = newArr.concat(_flat(item));
+    } else {
+      newArr.push(item);
+    }
+  });
+  return newArr;
+}
+
 var instanceId = 0;
 /* harmony default export */ var treeselectMixin = ({
   provide: function provide() {
@@ -1054,27 +1066,6 @@ var instanceId = 0;
     }
   },
   methods: {
-    _flat: function (_flat2) {
-      function _flat(_x) {
-        return _flat2.apply(this, arguments);
-      }
-
-      _flat.toString = function () {
-        return _flat2.toString();
-      };
-
-      return _flat;
-    }(function (arr) {
-      var newArr = [];
-      arr.forEach(function (item, idx) {
-        if (Array.isArray(item)) {
-          newArr = newArr.concat(_flat(item));
-        } else {
-          newArr.push(item);
-        }
-      });
-      return newArr;
-    }),
     getCityList: function getCityList() {
       var cityList = [];
       var continent = sessionStorage.getItem("allContinent") || '[]';
@@ -1092,7 +1083,7 @@ var instanceId = 0;
         });
       }
 
-      return this._flat(cityList);
+      return _flat(cityList);
     },
     verifyProps: function verifyProps() {
       var _this3 = this;

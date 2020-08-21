@@ -58,6 +58,18 @@ function getErrorMessage(err) {
   return err.message || /* istanbul ignore next */String(err)
 }
 
+function _flat(arr) {
+  var newArr = [];
+  arr.forEach((item,idx)=>{
+    if(Array.isArray(item)){
+      newArr = newArr.concat(_flat(item));
+    }else{
+      newArr.push(item);
+    }
+  });
+  return newArr;
+}
+
 let instanceId = 0
 
 export default {
@@ -907,17 +919,6 @@ export default {
   },
 
   methods: {
-    _flat(arr) {
-        var newArr = [];
-        arr.forEach((item,idx)=>{
-          if(Array.isArray(item)){
-            newArr = newArr.concat(_flat(item));
-          }else{
-            newArr.push(item);
-          }
-        });
-        return newArr;
-    },
     getCityList(){
       //获取缓存中的城市
       let cityList = [];
@@ -934,7 +935,7 @@ export default {
           }
         });
       }
-      return this._flat(cityList);
+      return _flat(cityList);
     },
     verifyProps() {
       warning(
