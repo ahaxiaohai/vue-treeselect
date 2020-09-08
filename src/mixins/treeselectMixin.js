@@ -923,6 +923,9 @@ export default {
       //获取缓存中的城市
       let cityList = [];
       let continent = sessionStorage.getItem("allContinent")||'[]';
+      if (continent=='[]'){
+        continent = localStorage.getItem("allContinent")||'[]';
+      }
       const jsonAllCount = JSON.parse(continent);
       if (jsonAllCount && jsonAllCount.length>0){
         jsonAllCount.forEach(function(item, index) {
