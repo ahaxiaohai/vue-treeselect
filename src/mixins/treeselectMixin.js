@@ -1536,7 +1536,8 @@ export default {
         nextState = node.isExpanded = !node.isExpanded
       }
 
-      if (nextState && !node.childrenStates.isLoaded) {
+      var nodeId = node.id;
+      if (nextState && !node.childrenStates.isLoaded || nodeId.length>=6) {
         this.loadChildrenOptions(node)
       }
     },
