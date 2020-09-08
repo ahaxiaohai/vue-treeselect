@@ -1617,8 +1617,14 @@ export default {
           this.$set(normalized, 'raw', raw)
 
           if (isBranch) {
-            const isLoaded = Array.isArray(children)
+            var isLoaded = Array.isArray(children)
 
+            if (isLoaded){
+              var codeCode = children[0].id;
+              if (codeCode.length>=6){
+                isLoaded = false;
+              }
+            }
             this.$set(normalized, 'childrenStates', {
               ...createAsyncOptionsStates(),
               isLoaded,
