@@ -876,36 +876,58 @@ export default {
       if (this.async) {
         this.handleRemoteSearch()
       } else {
-        var _tisd = this
+        var _tisd = this;
+
         var searchQuery = _tisd.trigger.searchQuery.trim();
-        //根据查询参数配置城市
-        if (searchQuery && searchQuery!=""){
+
+        if (searchQuery && searchQuery != "") {
           var allCity = _tisd.getCityList();
-          var matArr =[];
-          if (allCity.length>0){
+
+          var matArr = [];
+          var matChildArr = [];
+
+          if (allCity.length > 0) {
             allCity.forEach(function (itm) {
               var sq = new RegExp(searchQuery);
               var cname = itm.codeCname;
-              if (cname.match(sq)){
-                if (itm.codeCode.length>=6){
-                  matArr.push(itm.upperCode)
+
+              if (cname.match(sq)) {
+                if (itm.codeLevel == 3) {
+                  matArr.push(itm.upperCode);
+                }else if (itm.codeLevel == 4) {
+                  matArr.push("CHN");
+                  matChildArr.push(itm.upperCode);
                 }
               }
             });
           }
-          if (matArr.length>0){
-            matArr.forEach(function (its) {
+
+          if (matArr.length > 0) {
+            let matA=Array.from(new Set(matArr));
+            matA.forEach(function (its) {
               _tisd.traverseAllNodesDFS(function (node) {
                 if (its === node.id) {
-                  _tisd.toggleExpanded(node)
+                  _tisd.toggleExpanded(node);
                 }
               });
             });
           }
+          setTimeout(function () {
+            if (matChildArr.length > 0) {
+              matChildArr.forEach(function (its) {
+                _tisd.traverseAllNodesDFS(function (node) {
+                  if (its === node.id) {
+                    _tisd.toggleExpanded(node);
+                  }
+                });
+              });
+            }
+          }, 80);
         }
+
         setTimeout(function () {
           _tisd.handleLocalSearch();
-        }, 100);
+        }, 160);
       }
 
       this.$emit('search-change', this.trigger.searchQuery, this.getInstanceId())
@@ -920,24 +942,32 @@ export default {
 
   methods: {
     getCityList(){
-      //获取缓存中的城市
-      let cityList = [];
-      let continent = sessionStorage.getItem("allContinent")||'[]';
-      if (continent=='[]'){
-        continent = localStorage.getItem("allContinent")||'[]';
+      var cityList = [];
+      var continent = sessionStorage.getItem("allContinent") || '[]';
+
+      if (continent == '[]') {
+        continent = localStorage.getItem("allContinent") || '[]';
       }
-      const jsonAllCount = JSON.parse(continent);
-      if (jsonAllCount && jsonAllCount.length>0){
-        jsonAllCount.forEach(function(item, index) {
+
+      var jsonAllCount = JSON.parse(continent);
+
+      if (jsonAllCount && jsonAllCount.length > 0) {
+        jsonAllCount.forEach(function (item, index) {
           if (item.children) {
             item.children.forEach(function (child) {
               if (child.children) {
-                cityList.push(child.children);
+                child.children.forEach(function (itc) {
+                  if (itc.children){
+                    cityList.push(itc.children);
+                  }
+                  cityList.push(itc)
+                });
               }
             });
           }
         });
       }
+
       return _flat(cityList);
     },
     verifyProps() {
